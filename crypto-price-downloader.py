@@ -55,7 +55,6 @@ def lambda_handler(event, context):
                 del i['DayVolumeXbt']
                 del i['DayVolumeXbtInSecondaryCurrrency']
                 del i['LastPrice']
-                del i['SecondaryCurrencyCode']
                 i['symbol'] = i['PrimaryCurrencyCode']
                 i['bidPrice'] = i['CurrentHighestBidPrice']
                 i['askPrice'] = i['CurrentLowestOfferPrice']
