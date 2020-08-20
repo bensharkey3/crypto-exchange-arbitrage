@@ -64,6 +64,7 @@ def lambda_handler(event, context):
                 i['exchange'] = 'independent reserve'
                 i['CreatedTimestampUtc'] = i['CreatedTimestampUtc'].replace('T', ' ')
                 i['CreatedTimestampUtc'] = i['CreatedTimestampUtc'].split('.', 1)[0]
+                i['CreatedTimestampUtc'] = datetime.datetime.strptime(i['CreatedTimestampUtc'], '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d %H:%M')
                 i['LambdaTimestamp'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
                 lst_ir.append(i)
     
@@ -86,7 +87,6 @@ def lambda_handler(event, context):
             response.raise_for_status()
             jsonResponse_timestamp = response.json()
             t = jsonResponse_timestamp['serverTime']
-            fmt = "%Y-%m-%d %H:%M"
             time = datetime.datetime.utcfromtimestamp(float(t)/1000.)
         
             # get binance bookticket
@@ -97,12 +97,16 @@ def lambda_handler(event, context):
             # add timestamp to json and clean up
             lst_bn = []
             for i in jsonResponse_codes:
-                i['CreatedTimestampUtc'] = time.strftime(fmt)
+                i['CreatedTimestampUtc'] = time.strftime('%Y-%m-%d %H:%M')
                 i['LambdaTimestamp'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+                i['SecondaryCurrencyCode'] = 'USD'
+                i['exchange'] = 'binance'
+                i['bidPrice'] = float(i['bidPrice'])
+                i['askPrice'] = float(i['askPrice'])
                 del i['bidQty']
                 del i['askQty']
-                i['exchange'] = 'binance'
-                lst_bn.append(i)
+                if i['symbol'].endswith('USD'):
+                    lst_bn.append(i)
 
         except Exception as err:
             lst_bn = '{}'.format(err)
