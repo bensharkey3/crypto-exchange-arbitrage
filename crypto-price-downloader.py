@@ -58,6 +58,8 @@ def lambda_handler(event, context):
                 i['symbol'] = i['PrimaryCurrencyCode']
                 i['bidPrice'] = i['CurrentHighestBidPrice']
                 i['askPrice'] = i['CurrentLowestOfferPrice']
+                i['SecondaryCurrencyCode'] = i['SecondaryCurrencyCode'].upper()
+                i['symbol'] = i['symbol'].upper()
                 del i['CurrentLowestOfferPrice']
                 del i['CurrentHighestBidPrice']
                 del i['PrimaryCurrencyCode']
