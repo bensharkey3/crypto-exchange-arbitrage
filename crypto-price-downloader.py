@@ -107,7 +107,7 @@ def lambda_handler(event, context):
                 i['askPrice'] = float(i['askPrice'])
                 del i['bidQty']
                 del i['askQty']
-                if i['symbol'].endswith('USD'):
+                if i['symbol'].endswith(('USD', 'USDT')):
                     lst_bn.append(i)
 
         except Exception as err:
