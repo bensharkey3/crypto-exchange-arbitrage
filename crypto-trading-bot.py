@@ -162,8 +162,34 @@ def lambda_handler(event, context):
             ir_cancelorder(key, secret, i)
         
         # hit binance api & xrates api to return binance buy and sell prices
+        # multiply all prices by aud_usd rate, and clean
+        lst_bn = get_binance_prices()
+        for i in lst_bn:
+            i['bidPrice'] = i['bidPrice']/AUD_USD
+            i['askPrice'] = i['askPrice']/AUD_USD
+            i['SecondaryCurrencyCode'] = 'AUD'
+            i['symbol'] = i['symbol'].replace("TUSD", "")
+            i['symbol'] = i['symbol'].replace("USDT", "")
+            i['symbol'] = i['symbol'].replace("BUSD", "")
+            i['symbol'] = i['symbol'].replace("USDC", "")
 
 
+        # return exchange rate as float 
+        lst_exch = get_exch_rate()
+        AUD_USD = lst_exch[0]['AUD_USD']
+        print('exchange rate is: '.format(AUD_USD))
+
+
+        # git ir api to get price json, clean btc
+        lst_ir = get_ir_prices()
+        for i in lst_ir:
+            i['symbol'] = i['symbol'].replace("XBT", "BTC")
+
+        
+        #compare ir and bn json lists to determine if buy opportunity > 1.025
+
+
+    main()
 
 
     return {
